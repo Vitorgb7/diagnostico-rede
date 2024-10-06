@@ -52,8 +52,6 @@ Antes de começar, verifique se você tem os seguintes softwares instalados:
 3. Configure a interface de rede:
 
 ### Abra o arquivo app.js e localize a linha onde a interface é definida:
-    npm install
-
 ## iface: 'Wi-Fi'
 Substitua 'Wi-Fi' pelo nome correto da sua interface conforme encontrado no comando ipconfig.
 
