@@ -1,116 +1,68 @@
-import express from 'express';
-import wifi from 'node-wifi';
-import cors from 'cors';
-import NetworkSpeed from 'network-speed';
-import { getActiveNetworkInterface } from '../utils/networkUtils.js';
-
+const express = require('express');
+const wifi = require('node-wifi');
+const cors = require('cors');
 const app = express();
 const port = 3000;
-const testNetworkSpeed = new NetworkSpeed();
 
-// Inicializa a interface de rede ativa
-const activeNetworkInterface = getActiveNetworkInterface();
-console.log(`Interface de rede ativa: ${activeNetworkInterface}`);
-
-wifi.init({ iface: activeNetworkInterface || '' });
+wifi.init({
+iface: ''
+})
 
 app.use(cors());
 
-// Definições para velocidade de download e upload
-const fileSizeInBytes = 10000000; // 10 MB
-const baseUrl = 'http://localhost:3000/testfile.bin'; // URL fictícia para download
+const frequencyRanges = [
+{ min: 2400, max: 2500, classification: 'Boa (Frequência 2.4 GHz, ideal para longo alcance, mas sujeita a interferências).' },
+{ min: 5000, max: 5800, classification: 'Média (Frequência 5 GHz, melhor para velocidade, mas com menor alcance).' },
+{ min: 5900, max: 7100, classification: 'Boa (Frequência 6 GHz, maior velocidade, mas alcance muito limitado).' }
+];
+
+function classifyFrequency(frequency) {
+if (!frequency || isNaN(frequency)) {
+return 'Frequência indisponível ou desconhecida.';
+}
+
+const range = frequencyRanges.find(r => frequency >= r.min && frequency <= r.max);
+return range ? range.classification : 'Desconhecida (Frequência fora dos padrões típicos de Wi-Fi).';
+}
 
 app.get('/diagnose', async (req, res) => {
-  try {
-    console.log('Tentando obter informações da rede...');
-    const currentConnection = await wifi.getCurrentConnections();
-    console.log('Informações da rede obtidas:', currentConnection);
+try {
+const currentConnection = await wifi.getCurrentConnections();
 
-    if (currentConnection.length === 0) {
-      return res.json({
-        status: 'Nenhuma rede conectada.',
-        suggestions: [
-          'Verifique se o Wi-Fi está ativado.',
-          'Tente conectar-se a uma rede Wi-Fi.',
-        ],
-      });
-    }
-
-    const connection = currentConnection[0];
-    const suggestions = [];
-    if (connection.signal_level < -70) {
-      suggestions.push('A intensidade do sinal é baixa. Tente se aproximar do roteador.');
-    }
-
-    const downloadSpeed = await getDownloadSpeed();
-    const uploadSpeed = await getUploadSpeed();
-
+if (currentConnection.length === 0) {
     return res.json({
-      status: 'Rede conectada.',
-      network: connection.ssid,
-      signalLevel: connection.signal_level,
-      frequency: connection.frequency,
-      ping: 'A ser implementado', // Você pode implementar uma função para medir o ping se necessário
-      downloadSpeed: `Velocidade de Download: ${downloadSpeed.mbps} Mbps`,
-      uploadSpeed: `Velocidade de Upload: ${uploadSpeed.mbps} Mbps`,
-      suggestions,
+    status: 'Nenhuma rede conectada.',
+    suggestions: ['Verifique se o Wi-Fi está ativado.', 'Tente conectar-se a uma rede Wi-Fi.']
     });
-  } catch (error) {
-    console.error('Erro ao obter informações da rede:', error);
-    res.status(500).json({ error: 'Erro ao realizar diagnóstico da rede.' });
-  }
-});
-
-app.post('/upload', async (req, res) => {
-  try {
-    const uploadSpeed = await getUploadSpeed();
-    res.json({ uploadSpeed: `Velocidade de Upload: ${uploadSpeed.mbps} Mbps` });
-  } catch (error) {
-    console.error('Erro ao obter a velocidade de upload:', error);
-    res.status(500).json({ error: 'Erro ao medir upload' });
-  }
-});
-
-app.get('/download', async (req, res) => {
-  try {
-    const downloadSpeed = await getDownloadSpeed();
-    res.json({ downloadSpeed: `Velocidade de Download: ${downloadSpeed.mbps} Mbps` });
-  } catch (error) {
-    console.error('Erro ao obter a velocidade de download:', error);
-    res.status(500).json({ error: 'Erro ao medir download' });
-  }
-});
-
-// Funções de velocidade
-async function getDownloadSpeed() {
-  try {
-    const speed = await testNetworkSpeed.checkDownloadSpeed(baseUrl, fileSizeInBytes);
-    return speed;
-  } catch (error) {
-    console.error('Erro ao obter a velocidade de download:', error);
-    throw error;
-  }
 }
 
-async function getUploadSpeed() {
-  const options = {
-    hostname: 'www.google.com',
-    port: 80,
-    path: '/catchers/544b09b4599c1d0200000289',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-  try {
-    const speed = await testNetworkSpeed.checkUploadSpeed(options);
-    return speed;
-  } catch (error) {
-    console.error('Erro ao obter a velocidade de upload:', error);
-    throw error;
-  }
+const network = currentConnection[0]
+
+const frequency = network.frequency
+const frequencyClassification = classifyFrequency(frequency)
+
+const response = {
+    status: `Conectado à rede: ${network.ssid || 'Indisponível'}`,
+    signalLevel: network.signal_level ? `${network.signal_level}%` : 'Sinal indisponível',
+    frequency: frequency ? `${frequency} MHz (${frequencyClassification})` : 'Frequência indisponível',
+    suggestions: [
+    'Ajuste o roteador para minimizar interferências.',
+    'Posicione o roteador em um local centralizado.',
+    `A força do sinal é ${network.signal_level ? network.signal_level : 'indisponível'}%. Considere melhorar a posição do roteador se o sinal estiver fraco.`,
+    `A frequência atual é ${frequency ? `${frequency} MHz` : 'indisponível'}. ${frequencyClassification}`
+    ]
+};
+
+res.json(response);
+} catch (error) {
+console.error('Erro ao obter as informações da rede:', error);
+res.status(500).json({ 
+    status: 'Erro ao realizar o diagnóstico.',
+    suggestions: ['Tente novamente mais tarde.'] 
+});
 }
+});
 
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
-});
+console.log(`Servidor rodando na porta ${port}`)
+})
