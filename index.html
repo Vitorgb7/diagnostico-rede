@@ -12,10 +12,19 @@
     <p>Identifique e solucione problemas de conectividade com sua rede Wi-Fi doméstica.</p>
     
     <button id="diagnoseBtn">Iniciar Diagnóstico</button>
+    <button id="uploadBtn">Testar Upload</button>
+    <button id="downloadBtn">Testar Download</button>
     
     <div id="diagnosisResult" class="result-container">
       <h2>Resultados do Diagnóstico</h2>
       <p id="status">Clique em "Iniciar Diagnóstico" para começar.</p>
+      <p><strong>Rede:</strong> <span id="networkName">-</span></p>
+      <p><strong>Nível de Sinal:</strong> <span id="signalLevel">-</span></p>
+      <p><strong>Frequência:</strong> <span id="frequency">-</span></p>
+      <p><strong>Ping:</strong> <span id="ping">-</span> ms</p>
+      <p><strong>Velocidade de Download:</strong> <span id="downloadSpeed">-</span> Mbps</p>
+      <p><strong>Velocidade de Upload:</strong> <span id="uploadSpeed">-</span> Mbps</p>
+      <h3>Sugestões de Melhoria:</h3>
       <ul id="suggestions"></ul>
     </div>
   </div>
