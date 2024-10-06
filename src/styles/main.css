@@ -1,52 +1,192 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #e0f7fa; /* Azul claro */
+  display: flex;
+  flex-direction: column; /* Alinhamento vertical */
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+body:hover {
+  background-color: #b2ebf2; /* Azul médio */
+}
+
+.container {
+  max-width: 800px;
+  margin: 20px;
+  text-align: center;
+  background-color: #ffffff; /* Branco */
+  padding: 40px;
+  border-radius: 20px; /* Bordas arredondadas */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito de transformação ao passar o mouse na container */
+.container:hover {
+  /* transform: translateY(-5px); */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para o título dentro da container */
+h1 {
+  color: #00796b; /* Verde-água escuro */
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease; /* Animação ao carregar */
+  font-size: 2em; /* Tamanho do título */
+}
+
+/* Animação de Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para o parágrafo dentro da container */
+p {
+  margin-bottom: 20px; /* Espaçamento entre parágrafos */
+  color: #333; /* Cor do texto */
+  font-size: 1.1em; /* Tamanho do texto */
+}
+
+/* Estilos para o h1 e p que estão fora da container */
+body > h1 {
+  color: #00796b; /* Verde-água escuro */
+  font-size: 2.5em; /* Tamanho do título fora da container */
+  margin: 20px 0; /* Margem superior e inferior */
+  text-align: center; /* Centralizar o texto */
+}
+
+body > p {
+  color: #555; /* Cor do texto para o parágrafo fora da container */
+  font-size: 1.2em; /* Tamanho do texto */
+  text-align: center; /* Centralizar o texto */
+  margin-bottom: 30px; /* Margem inferior */
+}
+
+button {
+  background-color: #00796b; /* Verde-água escuro */
+  color: white;
+  padding: 15px 32px;
+  font-size: 16px;
+  border: none;
+  border-radius: 30px; /* Bordas arredondadas */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  outline: none;
+  margin: 10px; /* Espaçamento entre botões */
+}
+
+button:hover {
+  background-color: #004d40; /* Verde-água escuro mais intenso */
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.result-container {
+  margin-top: 30px;
+  padding: 20px; /* Adicionando padding para separar elementos */
+  background-color: #e0f2f1; /* Verde claro */
+  border-radius: 10px; /* Bordas arredondadas */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para cada item de resultado */
+.result-container p {
+  background-color: #ffffff; /* Caixa branca */
+  margin: 10px 0; /* Margem para separar cada caixa */
+  padding: 15px;
+  border: 1px solid #b2dfdb; /* Borda cinza claro */
+  border-radius: 10px; /* Bordas arredondadas */
+  transition: background-color 0.3s ease;
+}
+
+/* Efeito ao passar o mouse sobre os parágrafos */
+.result-container p:hover {
+  background-color: #b2dfdb; /* Verde mais escuro */
+  cursor: pointer;
+}
+
+/* Estilos para o título de sugestões */
+h3 {
+  margin-top: 20px;
+  color: #00796b; /* Verde-água escuro */
+  font-size: 1.5em; /* Tamanho do título */
+}
+
+/* Estilos para a lista de sugestões */
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+li {
+  background-color: #e0f2f1; /* Verde claro */
+  margin: 10px 0;
+  padding: 15px;
+  border: 1px solid #b2dfdb; /* Borda cinza claro */
+  border-radius: 10px; /* Bordas arredondadas */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Efeito de mudança de cor e transformação ao passar o mouse nos itens da lista */
+li:hover {
+  background-color: #b2dfdb; /* Verde mais escuro */
+  transform: translateY(-2px);
+}
+
+/* Efeito de opacidade para itens adicionados à lista */
+li.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+
+footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #004d40; /* Verde-água escuro */
+}
+
+/* Links do rodapé */
+footer a {
+  color: #00796b;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: #004d40; /* Verde-água escuro mais intenso */
+}
+
+/* Media queries para responsividade */
+@media (max-width: 600px) {
   .container {
-    max-width: 800px;
-    margin: 50px auto;
-    text-align: center;
-    background-color: #fff;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
   }
-  
-  h1 {
-    color: #333;
-  }
-  
+
   button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 32px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 10px 20px;
   }
-  
-  button:hover {
-    background-color: #45a049;
+
+  h1 {
+    font-size: 24px;
   }
-  
-  .result-container {
-    margin-top: 30px;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
-    background-color: #f8f8f8;
-    margin: 5px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
+}
