@@ -7,8 +7,6 @@ import { getActiveNetworkInterface } from '../utils/networkUtils.js';
 const app = express();
 const port = 3000;
 const testNetworkSpeed = new NetworkSpeed();
-
-// Inicializa a interface de rede ativa
 const activeNetworkInterface = getActiveNetworkInterface();
 console.log(`Interface de rede ativa: ${activeNetworkInterface}`);
 
@@ -16,10 +14,9 @@ wifi.init({ iface: activeNetworkInterface || '' });
 
 app.use(cors());
 
-// Definições para velocidade de download e upload
-const fileSizeInBytes = 10000000; // 10 MB
-const baseUrl = 'http://localhost:3000/testfile.bin'; // URL fictícia para download
-const uploadTestUrl = 'http://localhost:3000/upload-test'; // URL fictícia para upload
+const fileSizeInBytes = 10000000; 
+const baseUrl = 'http://localhost:3000/testfile.bin';
+const uploadTestUrl = 'http://localhost:3000/upload-test';
 
 app.get('/diagnose', async (req, res) => {
   try {
@@ -37,26 +34,21 @@ app.get('/diagnose', async (req, res) => {
       });
     }
 
-    // Pegando informações da conexão atual
     const connection = currentConnection[0];
     const suggestions = [];
 
-    // Verificando a intensidade do sinal
     if (connection.signal_level < -70) {
       suggestions.push('A intensidade do sinal é baixa. Tente se aproximar do roteador.');
     }
 
-    // Medindo a velocidade de download e upload
     const downloadSpeed = await getDownloadSpeed();
     const uploadSpeed = await getUploadSpeed();
-
-    // Retornando os dados
     return res.json({
       status: 'Rede conectada.',
       network: connection.ssid,
       signalLevel: connection.signal_level,
       frequency: connection.frequency,
-      ping: 'A ser implementado', // Você pode implementar uma função para medir o ping se necessário
+      ping: 'A ser implementado', 
       downloadSpeed: `Velocidade de Download: ${downloadSpeed.mbps} Mbps`,
       uploadSpeed: `Velocidade de Upload: ${uploadSpeed.mbps} Mbps`,
       suggestions,
@@ -67,7 +59,6 @@ app.get('/diagnose', async (req, res) => {
   }
 });
 
-// Rota de upload
 app.post('/upload', async (req, res) => {
   try {
     const uploadSpeed = await getUploadSpeed();
@@ -78,7 +69,6 @@ app.post('/upload', async (req, res) => {
   }
 });
 
-// Rota de download
 app.get('/download', async (req, res) => {
   try {
     const downloadSpeed = await getDownloadSpeed();
@@ -89,7 +79,6 @@ app.get('/download', async (req, res) => {
   }
 });
 
-// Funções de velocidade
 async function getDownloadSpeed() {
   try {
     const speed = await testNetworkSpeed.checkDownloadSpeed(baseUrl, fileSizeInBytes);

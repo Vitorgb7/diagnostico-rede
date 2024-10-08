@@ -52,7 +52,6 @@ document.getElementById('uploadBtn').addEventListener('click', async function() 
   }
 });
 
-// Adicionando funcionalidade para o botão de download
 document.getElementById('downloadBtn').addEventListener('click', async function() {
   const statusElement = document.getElementById('status');
 
